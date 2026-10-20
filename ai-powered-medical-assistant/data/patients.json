@@ -1,0 +1,164 @@
+[
+  {
+    "patient_id": "P001",
+    "name": "Rajesh Kumar",
+    "age": 70,
+    "gender": "Male",
+    "blood_group": "B+",
+    "contact": "+91-9876543210",
+    "email": "rajesh.kumar@email.com",
+    "address": "12, MG Road, Bangalore, Karnataka",
+    "medical_history": [
+      {
+        "date": "2024-01-15",
+        "diagnosis": "Chronic Kidney Disease (Stage 3)",
+        "doctor": "Dr. Priya Nair",
+        "treatment": "ACE inhibitors, low-protein diet, bi-monthly monitoring",
+        "notes": "Patient shows stable creatinine levels. Blood pressure controlled at 130/80."
+      },
+      {
+        "date": "2023-08-10",
+        "diagnosis": "Type 2 Diabetes Mellitus",
+        "doctor": "Dr. Anil Mehta",
+        "treatment": "Metformin 500mg twice daily, lifestyle changes",
+        "notes": "HbA1c: 7.2%. Patient advised to monitor blood glucose daily."
+      },
+      {
+        "date": "2023-03-22",
+        "diagnosis": "Hypertension",
+        "doctor": "Dr. Anil Mehta",
+        "treatment": "Amlodipine 5mg once daily",
+        "notes": "BP well-controlled. Continue current regimen."
+      }
+    ],
+    "current_medications": [
+      "Metformin 500mg (twice daily)",
+      "Amlodipine 5mg (once daily)",
+      "Lisinopril 10mg (once daily)"
+    ],
+    "allergies": ["Penicillin", "Sulfa drugs"],
+    "last_visit": "2024-01-15",
+    "upcoming_appointment": null
+  },
+  {
+    "patient_id": "P002",
+    "name": "Sunita Sharma",
+    "age": 45,
+    "gender": "Female",
+    "blood_group": "O+",
+    "contact": "+91-9812345678",
+    "email": "sunita.sharma@email.com",
+    "address": "34, Lakeview Colony, Pune, Maharashtra",
+    "medical_history": [
+      {
+        "date": "2024-02-20",
+        "diagnosis": "Rheumatoid Arthritis",
+        "doctor": "Dr. Kavita Singh",
+        "treatment": "Methotrexate 7.5mg weekly, NSAIDs as needed",
+        "notes": "Morning stiffness lasting 2 hours. ESR elevated at 45mm/hr."
+      },
+      {
+        "date": "2023-11-05",
+        "diagnosis": "Anemia",
+        "doctor": "Dr. Anil Mehta",
+        "treatment": "Iron supplements, dietary changes",
+        "notes": "Hemoglobin: 9.8 g/dL. Follow-up in 3 months."
+      }
+    ],
+    "current_medications": [
+      "Methotrexate 7.5mg (weekly)",
+      "Folic acid 5mg (daily)",
+      "Ferrous sulfate 200mg (twice daily)"
+    ],
+    "allergies": ["Aspirin"],
+    "last_visit": "2024-02-20",
+    "upcoming_appointment": null
+  },
+  {
+    "patient_id": "P003",
+    "name": "Arjun Reddy",
+    "age": 32,
+    "gender": "Male",
+    "blood_group": "A-",
+    "contact": "+91-9988776655",
+    "email": "arjun.reddy@email.com",
+    "address": "78, Jubilee Hills, Hyderabad, Telangana",
+    "medical_history": [
+      {
+        "date": "2024-03-10",
+        "diagnosis": "Asthma (Moderate Persistent)",
+        "doctor": "Dr. Ramesh Gupta",
+        "treatment": "Inhaled corticosteroids (Budesonide 200mcg), SABA rescue inhaler",
+        "notes": "FEV1: 72% predicted. Triggers: dust, cold air."
+      }
+    ],
+    "current_medications": [
+      "Budesonide inhaler 200mcg (twice daily)",
+      "Salbutamol inhaler (as needed)"
+    ],
+    "allergies": ["Latex", "NSAIDs"],
+    "last_visit": "2024-03-10",
+    "upcoming_appointment": null
+  },
+  {
+    "patient_id": "P004",
+    "name": "Meena Iyer",
+    "age": 58,
+    "gender": "Female",
+    "blood_group": "AB+",
+    "contact": "+91-9445566778",
+    "email": "meena.iyer@email.com",
+    "address": "5, Anna Nagar, Chennai, Tamil Nadu",
+    "medical_history": [
+      {
+        "date": "2024-02-01",
+        "diagnosis": "Hypothyroidism",
+        "doctor": "Dr. Priya Nair",
+        "treatment": "Levothyroxine 50mcg daily",
+        "notes": "TSH: 8.5 mIU/L. Dosage adjustment may be needed."
+      },
+      {
+        "date": "2023-09-15",
+        "diagnosis": "Osteoporosis",
+        "doctor": "Dr. Kavita Singh",
+        "treatment": "Calcium 1000mg + Vitamin D3 800IU daily, bisphosphonate therapy",
+        "notes": "DEXA scan T-score: -2.6. Moderate fracture risk."
+      }
+    ],
+    "current_medications": [
+      "Levothyroxine 50mcg (once daily, fasting)",
+      "Calcium carbonate 1000mg (daily)",
+      "Vitamin D3 800IU (daily)",
+      "Alendronate 70mg (weekly)"
+    ],
+    "allergies": [],
+    "last_visit": "2024-02-01",
+    "upcoming_appointment": null
+  },
+  {
+    "patient_id": "P005",
+    "name": "Vikram Nair",
+    "age": 28,
+    "gender": "Male",
+    "blood_group": "B-",
+    "contact": "+91-9123456789",
+    "email": "vikram.nair@email.com",
+    "address": "22, Whitefield, Bangalore, Karnataka",
+    "medical_history": [
+      {
+        "date": "2024-04-01",
+        "diagnosis": "Migraine with Aura",
+        "doctor": "Dr. Ramesh Gupta",
+        "treatment": "Sumatriptan 50mg for acute attacks, Propranolol 40mg for prevention",
+        "notes": "2-3 episodes per month. Visual aura precedes headache by 20-30 min."
+      }
+    ],
+    "current_medications": [
+      "Sumatriptan 50mg (as needed)",
+      "Propranolol 40mg (once daily)"
+    ],
+    "allergies": ["Codeine"],
+    "last_visit": "2024-04-01",
+    "upcoming_appointment": null
+  }
+]

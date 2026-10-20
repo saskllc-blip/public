@@ -1,0 +1,30 @@
+[
+  {
+    "appointment_id": "A001",
+    "patient_id": "P001",
+    "patient_name": "Rajesh Kumar",
+    "doctor_id": "D001",
+    "doctor_name": "Dr. Priya Nair",
+    "specialization": "Nephrologist",
+    "date": "2026-05-10",
+    "time": "09:00",
+    "status": "Confirmed",
+    "reason": "Follow-up for Chronic Kidney Disease",
+    "booked_at": "2026-05-02T10:00:00",
+    "notes": "Bring last 3 months blood reports"
+  },
+  {
+    "appointment_id": "A002",
+    "patient_id": "P002",
+    "patient_name": "Sunita Sharma",
+    "doctor_id": "D003",
+    "doctor_name": "Dr. Kavita Singh",
+    "specialization": "Rheumatologist",
+    "date": "2026-05-09",
+    "time": "14:00",
+    "status": "Confirmed",
+    "reason": "Rheumatoid Arthritis 3-month review",
+    "booked_at": "2026-05-02T11:00:00",
+    "notes": "ESR and CRP blood tests required before visit"
+  }
+]

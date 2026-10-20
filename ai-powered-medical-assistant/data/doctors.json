@@ -1,0 +1,106 @@
+[
+  {
+    "doctor_id": "D001",
+    "name": "Dr. Priya Nair",
+    "specialization": "Nephrologist",
+    "qualification": "MD, DM Nephrology",
+    "hospital": "City Care Hospital",
+    "contact": "+91-8001234567",
+    "email": "priya.nair@citycare.com",
+    "available_slots": [
+      {"date": "2026-05-10", "time": "09:00", "booked": false},
+      {"date": "2026-05-10", "time": "10:00", "booked": false},
+      {"date": "2026-05-11", "time": "09:00", "booked": false},
+      {"date": "2026-05-11", "time": "11:00", "booked": false},
+      {"date": "2026-05-13", "time": "14:00", "booked": false},
+      {"date": "2026-05-13", "time": "15:00", "booked": false},
+      {"date": "2026-05-14", "time": "09:00", "booked": false},
+      {"date": "2026-05-14", "time": "10:00", "booked": false}
+    ],
+    "rating": 4.8,
+    "experience_years": 15,
+    "consultation_fee": 800
+  },
+  {
+    "doctor_id": "D002",
+    "name": "Dr. Anil Mehta",
+    "specialization": "General Physician",
+    "qualification": "MBBS, MD Internal Medicine",
+    "hospital": "Apollo Clinics",
+    "contact": "+91-8009876543",
+    "email": "anil.mehta@apollo.com",
+    "available_slots": [
+      {"date": "2026-05-09", "time": "10:00", "booked": false},
+      {"date": "2026-05-09", "time": "11:00", "booked": false},
+      {"date": "2026-05-10", "time": "10:00", "booked": false},
+      {"date": "2026-05-10", "time": "16:00", "booked": false},
+      {"date": "2026-05-12", "time": "09:00", "booked": false},
+      {"date": "2026-05-12", "time": "11:00", "booked": false},
+      {"date": "2026-05-13", "time": "10:00", "booked": false},
+      {"date": "2026-05-15", "time": "14:00", "booked": false}
+    ],
+    "rating": 4.6,
+    "experience_years": 20,
+    "consultation_fee": 600
+  },
+  {
+    "doctor_id": "D003",
+    "name": "Dr. Kavita Singh",
+    "specialization": "Rheumatologist",
+    "qualification": "MD, DM Rheumatology",
+    "hospital": "Max Super Speciality Hospital",
+    "contact": "+91-8007654321",
+    "email": "kavita.singh@max.com",
+    "available_slots": [
+      {"date": "2026-05-09", "time": "14:00", "booked": false},
+      {"date": "2026-05-09", "time": "15:00", "booked": false},
+      {"date": "2026-05-11", "time": "09:00", "booked": false},
+      {"date": "2026-05-11", "time": "10:00", "booked": false},
+      {"date": "2026-05-13", "time": "14:00", "booked": false},
+      {"date": "2026-05-14", "time": "10:00", "booked": false}
+    ],
+    "rating": 4.9,
+    "experience_years": 12,
+    "consultation_fee": 900
+  },
+  {
+    "doctor_id": "D004",
+    "name": "Dr. Ramesh Gupta",
+    "specialization": "Neurologist",
+    "qualification": "MD, DM Neurology",
+    "hospital": "AIIMS Delhi",
+    "contact": "+91-8005551234",
+    "email": "ramesh.gupta@aiims.edu",
+    "available_slots": [
+      {"date": "2026-05-10", "time": "09:00", "booked": false},
+      {"date": "2026-05-10", "time": "13:00", "booked": false},
+      {"date": "2026-05-11", "time": "14:00", "booked": false},
+      {"date": "2026-05-12", "time": "09:00", "booked": false},
+      {"date": "2026-05-12", "time": "15:00", "booked": false},
+      {"date": "2026-05-14", "time": "11:00", "booked": false}
+    ],
+    "rating": 4.7,
+    "experience_years": 18,
+    "consultation_fee": 1000
+  },
+  {
+    "doctor_id": "D005",
+    "name": "Dr. Sunanda Rao",
+    "specialization": "Cardiologist",
+    "qualification": "MD, DM Cardiology, FACC",
+    "hospital": "Fortis Heart Institute",
+    "contact": "+91-8003334455",
+    "email": "sunanda.rao@fortis.com",
+    "available_slots": [
+      {"date": "2026-05-09", "time": "09:00", "booked": false},
+      {"date": "2026-05-09", "time": "10:00", "booked": false},
+      {"date": "2026-05-11", "time": "11:00", "booked": false},
+      {"date": "2026-05-12", "time": "14:00", "booked": false},
+      {"date": "2026-05-13", "time": "09:00", "booked": false},
+      {"date": "2026-05-14", "time": "15:00", "booked": false}
+    ],
+    "rating": 4.9,
+    "experience_years": 22,
+    "consultation_fee": 1200
+  }
+]
