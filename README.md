@@ -4,6 +4,8 @@
 
 This repository is our public showcase: working demos, sample projects, and tutorials that show how we build. Everything here is self-contained, runs on free tiers, and uses fictional data only.
 
+🌐 **Website:** https://saskllc-blip.github.io/public/ — our landing page: services, demos, founder background, and how to hire us.
+
 ## What we do
 
 - **AI App Rescue** — we repair and finish apps built with AI tools: broken logins, payments, data handling, and App Store rejections, taken through to production-ready.
