@@ -1,0 +1,1 @@
+"""Branding and styling assets."""

@@ -17,8 +17,10 @@ How we work: **AI tools for speed, human review and automated testing for reliab
 | Project | What it shows | Stack |
 | --- | --- | --- |
 | [sask-stripe-demo](sask-stripe-demo/) | A mini store with a simulated Stripe checkout and a webhook console — signature verification, idempotency, retries, and refunds: the parts of payment integration that usually break in production. Simulation-only; no real charges, no real payment data. | Python · Streamlit |
+| [sask-rentals-demo](sask-rentals-demo/) | Rentals OS — a rental-portfolio dashboard: occupancy and rent-roll KPIs, properties, tenants and leases, payments, and mortgage summaries, all over fictional data. | Python · Streamlit |
+| [sask-linkedin-demo](sask-linkedin-demo/) | A LinkedIn engagement app — trending posts with AI-suggested reply drafts, post analytics with comment management, an FAQ-grounded chatbot with guardrails, and a kanban job pipeline. Mock data only. | Python · Streamlit |
 
-More demos are on the way — an AI customer-support chatbot and a rentals dashboard next.
+An AI customer-support chatbot demo is in build and joins this showcase next.
 
 ## Work with us
 
