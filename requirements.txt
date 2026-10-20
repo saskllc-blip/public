@@ -1,0 +1,2 @@
+# Public demo — free PyPI only. No Stripe SDK (simulation-only by default).
+streamlit>=1.28.0,<2
