@@ -116,7 +116,7 @@ with tab2:
             ["module","question","score","grade","generated"]]
         df_ev.columns=["Module","Question","Score","Grade","Answer"]
         grade_colors={"A":"#d4edda","B":"#cce5ff","C":"#fff3cd","D":"#ffe8d6","F":"#f8d7da"}
-        st.dataframe(df_ev.style.applymap(lambda v: f"background-color:{grade_colors.get(v,'')}",
+        st.dataframe(df_ev.style.map(lambda v: f"background-color:{grade_colors.get(v,'')}",
                                            subset=["Grade"]),
                      use_container_width=True, hide_index=True)
 

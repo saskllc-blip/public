@@ -43,7 +43,7 @@ with tab1:
             if val=="Cancelled": return "background-color:#f8d7da;color:#721c24"
             return ""
 
-        st.dataframe(df.sort_values(["Date","Time"]).style.applymap(hl,subset=["Status"]),
+        st.dataframe(df.sort_values(["Date","Time"]).style.map(hl,subset=["Status"]),
                      use_container_width=True, hide_index=True)
         c1,c2,c3 = st.columns(3)
         c1.metric("Total",     len(appts))
