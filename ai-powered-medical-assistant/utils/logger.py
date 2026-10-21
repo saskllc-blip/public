@@ -28,9 +28,9 @@ def _save(path: str, data: List[Dict]) -> None:
 
 # ── Tool logs ─────────────────────────────────────────────────────────────────
 def log_tool_call(tool_name, input_data, output_data, success,
-                  error=None, duration_ms=0.0, patient_id=None):
+                  error=None, duration_ms=0.0, patient_id=None, **extra):
     logs = _load(config.TOOL_LOGS_FILE)
-    logs.append({
+    entry = {
         "timestamp":   datetime.now().isoformat(),
         "tool_name":   tool_name,
         "input":       str(input_data)[:500],
@@ -39,7 +39,10 @@ def log_tool_call(tool_name, input_data, output_data, success,
         "error":       error,
         "duration_ms": round(duration_ms, 2),
         "patient_id":  patient_id,
-    })
+    }
+    if extra:
+        entry["extra"] = {key: str(value)[:200] for key, value in extra.items()}
+    logs.append(entry)
     _save(config.TOOL_LOGS_FILE, logs)
 
 def get_tool_logs(limit=100):       return _load(config.TOOL_LOGS_FILE)[-limit:]
