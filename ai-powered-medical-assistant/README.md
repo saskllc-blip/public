@@ -2,6 +2,8 @@
 
 # MediAssist — AI-Powered Healthcare Assistant
 
+**Live demo:** https://public-gpw6gqkwdufnuhgn5aueod.streamlit.app/ — runs on synthetic data only (no real patient information).
+
 A multi-agent healthcare assistant demo (appointment booking, EHR lookup,
 medical web search, RAG over a patient knowledge base, **medical record vault
 with OCR**) built with LangChain, FAISS, and Streamlit — paired with a

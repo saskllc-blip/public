@@ -21,7 +21,7 @@ How we work: **AI tools for speed, human review and automated testing for reliab
 | [sask-stripe-demo](sask-stripe-demo/) | A mini store with a simulated Stripe checkout and a webhook console — signature verification, idempotency, retries, and refunds: the parts of payment integration that usually break in production. Simulation-only; no real charges, no real payment data. | Python · Streamlit |
 | [sask-rentals-demo](sask-rentals-demo/) | Rentals OS — a rental-portfolio dashboard: occupancy and rent-roll KPIs, properties, tenants and leases, payments, and mortgage summaries, all over fictional data. | Python · Streamlit |
 | [sask-linkedin-demo](sask-linkedin-demo/) | A LinkedIn engagement app — trending posts with AI-suggested reply drafts, post analytics with comment management, an FAQ-grounded chatbot with guardrails, and a kanban job pipeline. Mock data only. | Python · Streamlit |
-| [ai-powered-medical-assistant](ai-powered-medical-assistant/) | Agentic healthcare assistant — agent planning, RAG (FAISS) over synthetic patient records, appointment and EHR tools, medical vault, and an evaluation harness in evaluation/. Synthetic course data only; needs an OpenAI API key to run live. | Python · Streamlit · LangChain |
+| [ai-powered-medical-assistant](ai-powered-medical-assistant/) | Agentic healthcare assistant — agent planning, RAG (FAISS) over synthetic patient records, appointment and EHR tools, medical vault, and an evaluation harness in evaluation/. Synthetic course data only; needs an OpenAI API key to run live. Live demo: https://public-gpw6gqkwdufnuhgn5aueod.streamlit.app/ | Python · Streamlit · LangChain |
 
 An AI customer-support chatbot demo is in build and joins this showcase next.
 
