@@ -30,6 +30,12 @@ This folder is published in the SASK public showcase repository
 from that repository, branch `main`, with main file path
 `sask-linkedin-demo/app.py`. No secrets are required.
 
+## Architecture
+
+![Architecture](docs/images/architecture.png)
+
+See [docs/architecture.md](docs/architecture.md).
+
 ---
 © 2026 SASK LLC — SW Services · Public portfolio demonstration.
 AI tools for speed, human review and automated testing for reliability.

@@ -89,7 +89,9 @@ idempotency duplicate, refunded order.
 
 ## Architecture
 
-See `docs/products/sask_stripe_demo/ssd001-architecture.md`.
+![Architecture](docs/images/architecture.png)
+
+See [docs/architecture.md](docs/architecture.md).
 
 ---
 
