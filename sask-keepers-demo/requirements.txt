@@ -1,0 +1,3 @@
+# Public demo — free PyPI only. No private Keepers package.
+streamlit>=1.28.0,<2
+pillow>=10.0.0,<12
