@@ -19,6 +19,8 @@ INTENT_PATTERNS = {
         r"\b(what (did|does|has)|tell me about)\b.*(patient|he|she|his|her)\b",
         r"\b(retrieve|get|show|fetch|view)\b.*\b(history|records|file|report)\b",
         r"\b(diagnos|condition|illness)\b.*(had|has|suffer|treating)\b",
+        r"\b(medical|health) history\b",
+        r"\b(currently (on|taking)|current medications?)\b",
     ],
     "search_medical_info": [
         r"\b(what is|explain|describe|information about|tell me about|summarize)\b.*"
