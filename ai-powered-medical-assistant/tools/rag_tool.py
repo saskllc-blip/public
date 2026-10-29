@@ -90,7 +90,7 @@ def _build_docs() -> List:
         text = (f"Patient: {p['name']} (ID: {p['patient_id']})\n"
                 f"Age: {p['age']}, Gender: {p['gender']}, "
                 f"Blood Group: {p['blood_group']}\n"
-                f"Allergies: {', '.join(p.get('allergies',['None']))}\n"
+                f"Allergies: {', '.join(p.get('allergies') or ['None'])}\n"
                 f"Medications: {', '.join(p.get('current_medications',[]))}\n\n"
                 "Medical History:\n")
         for e in p.get("medical_history", []):
