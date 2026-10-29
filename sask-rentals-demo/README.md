@@ -14,7 +14,9 @@ and resets on demand.
 - Live occupancy, rent-roll, collection, and vacancy KPIs
 - Property creation with metrics updating immediately
 - Lease-renewal flags, payment collection, and mortgage LTV views
-- One-click reset to deterministic fictional seed data
+- 30 fictional properties across 10 cities in 9 countries (USD, locale-calibrated), with lease, payment, and expense history
+- Country / city / text filters that scope every view
+- One-click reset to deterministic fictional seed data (`data/generate_data.py`, fixed seed)
 
 ## Run locally
 
