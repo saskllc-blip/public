@@ -1,0 +1,6 @@
+# Runtime state written by the app -- never commit it to this public repo.
+logs/
+uploads/
+data/medical_records.json
+.env
+__pycache__/
