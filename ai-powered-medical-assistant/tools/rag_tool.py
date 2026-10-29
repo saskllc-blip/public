@@ -27,7 +27,7 @@ def _get_embeddings():
         )
     except Exception:
         # Fallback: simple TF-IDF-style mock embeddings (no API key or GPU needed)
-        from langchain.embeddings.base import Embeddings
+        from langchain_core.embeddings import Embeddings
         import hashlib, numpy as np
 
         class _MockEmbeddings(Embeddings):
@@ -54,7 +54,7 @@ def _get_or_create_vs():
         return _vectorstore
 
     from langchain_community.vectorstores import FAISS
-    from langchain.schema import Document
+    from langchain_core.documents import Document
 
     index_path = os.path.join(config.VECTORSTORE_DIR, "patient_index")
     emb = _get_embeddings()
@@ -77,8 +77,8 @@ def _get_or_create_vs():
 
 
 def _build_docs() -> List:
-    from langchain.schema import Document
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    from langchain_core.documents import Document
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
 
     with open(config.PATIENTS_FILE) as f:
         patients = json.load(f)
@@ -157,7 +157,7 @@ def rebuild_vectorstore() -> Dict[str, Any]:
 def add_document_to_store(text: str, metadata: Dict) -> Dict[str, Any]:
     start = time.time()
     try:
-        from langchain.schema import Document
+        from langchain_core.documents import Document
         vs  = _get_or_create_vs()
         doc = Document(page_content=text, metadata=metadata)
         vs.add_documents([doc])

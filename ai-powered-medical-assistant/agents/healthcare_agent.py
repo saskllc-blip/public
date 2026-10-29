@@ -47,7 +47,7 @@ def _llm_call(prompt: str) -> Optional[str]:
     if not llm:
         return None
     try:
-        from langchain.schema import HumanMessage, SystemMessage
+        from langchain_core.messages import HumanMessage, SystemMessage
         resp = llm.invoke([SystemMessage(content=SYSTEM_PROMPT),
                            HumanMessage(content=prompt)])
         return resp.content
