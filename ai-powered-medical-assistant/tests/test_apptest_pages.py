@@ -173,3 +173,9 @@ def test_agent_plan_stays_in_sidebar_after_rerun(app_env):
     next(b for b in at.button if b.key == "sp_1").click().run()  # booking prompt, no web search
     assert "🧠 Agent Plan" in [h.value for h in at.sidebar.subheader]
     assert "✅ `book_appointment`" in [m.value for m in at.sidebar.markdown]
+
+
+def test_specialization_options_are_unique(app_env):
+    at = run_page("pages/1_Patient_View.py")
+    opts = next(s for s in at.selectbox if s.label == "Specialization").options
+    assert len(opts) == len(set(opts))

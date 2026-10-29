@@ -143,7 +143,7 @@ with tab3:
         st.markdown("#### 🔍 Find & Book")
         spec = st.selectbox("Specialization",
             ["Nephrologist","Cardiologist","Neurologist","Rheumatologist",
-             "General Physician","Endocrinologist","Cardiologist"])
+             "General Physician","Endocrinologist"])
         if st.button("Search Doctors", type="primary"):
             sr = get_available_slots(spec)
             st.session_state.search_results = sr.get("doctors",[]) if sr.get("success") else []
