@@ -23,9 +23,20 @@ if "search_results" not in st.session_state: st.session_state.search_results = [
 
 def add_msg(role, content): st.session_state.chat_history.append({"role": role, "content": content})
 
+# Messages and the last agent plan are kept in session state because the
+# st.rerun() that follows each action would otherwise wipe them before display.
+def flash(msg): st.session_state.flash = msg
+
+if st.session_state.get("last_run"):
+    with st.sidebar:
+        st.subheader("🧠 Agent Plan")
+        for step, _ in st.session_state.last_run.get("plan",[]): st.markdown(f"✅ `{step}`")
+        st.metric("Duration", f"{st.session_state.last_run.get('duration_ms',0):.0f}ms")
+
 # ── Patient selector ──────────────────────────────────────────────────────────
 st.title("👤 Patient View")
 st.caption("Medical history · AI assistant · Appointments · Record management")
+if msg := st.session_state.pop("flash", None): st.success(msg)
 
 res = get_all_patients()
 if not res.get("success"):
@@ -102,10 +113,7 @@ with tab2:
                     r = st.session_state.agent.run(sp, patient_id=pid,
                                                     patient_name=patient["name"])
                 add_msg("assistant", r.get("response",""))
-                with st.sidebar:
-                    st.subheader("🧠 Agent Plan")
-                    for step, _ in r.get("plan",[]): st.markdown(f"✅ `{step}`")
-                    st.metric("Duration", f"{r.get('duration_ms',0):.0f}ms")
+                st.session_state.last_run = r
                 st.rerun()
 
     st.divider()
@@ -117,14 +125,12 @@ with tab2:
         with st.spinner("Thinking..."):
             r = st.session_state.agent.run(q, patient_id=pid, patient_name=patient["name"])
         add_msg("assistant", r.get("response",""))
-        with st.sidebar:
-            st.subheader("🧠 Agent Plan")
-            for step, _ in r.get("plan",[]): st.markdown(f"✅ `{step}`")
-            st.metric("Duration", f"{r.get('duration_ms',0):.0f}ms")
+        st.session_state.last_run = r
         st.rerun()
 
     if st.button("🗑️ Clear Chat"):
         st.session_state.chat_history = []
+        st.session_state.last_run = None
         st.session_state.agent.reset()
         st.rerun()
 
@@ -159,7 +165,7 @@ with tab3:
                     bk = book_appointment(pid, doc["doctor_id"], d, t,
                                           reason or "General consultation")
                     if bk.get("success"):
-                        st.success(bk["message"])
+                        flash(bk["message"])
                         st.session_state.search_results = []
                         st.rerun()
                     else:
@@ -179,7 +185,7 @@ with tab3:
                     if a["status"]=="Confirmed":
                         if st.button("Cancel", key=f"cx_{a['appointment_id']}"):
                             cr = cancel_appointment(a["appointment_id"])
-                            if cr.get("success"): st.success("Cancelled."); st.rerun()
+                            if cr.get("success"): flash(cr["message"]); st.rerun()
                             else: st.error(cr.get("error"))
         else:
             st.info("No appointments found.")
@@ -201,7 +207,7 @@ with tab4:
                 r = add_medical_record(pid, diagnosis, doc_name,
                                        treatment, notes, str(rec_date))
                 if r.get("success"):
-                    st.success(r["message"])
+                    flash(r["message"])
                     rebuild_vectorstore()
                     st.rerun()
                 else:
@@ -283,7 +289,7 @@ with tab5:
                         )
                         
                         if upload_result.get("success"):
-                            st.success(upload_result["message"])
+                            flash(upload_result["message"])
                             
                             # Show extraction results
                             if upload_result.get("extracted_text"):
@@ -401,7 +407,7 @@ with tab5:
                                 if st.button("🗑️ Delete", key=f"del_{idx}_{rec['record_id']}", type="secondary"):
                                     del_result = delete_record(rec["record_id"])
                                     if del_result.get("success"):
-                                        st.success("Deleted!")
+                                        flash(del_result["message"])
                                         st.rerun()
                                     else:
                                         st.error(del_result.get("error"))

@@ -8,11 +8,13 @@ import json
 import os
 import shutil
 import uuid
+from datetime import date, timedelta
 
 import pytest
 from streamlit.testing.v1 import AppTest
 
 import config
+from agents import healthcare_agent
 from agents.memory_manager import MemoryManager
 from tools import medical_vault_tool, rag_tool
 from utils.logger import log_agent_trace
@@ -37,7 +39,22 @@ def app_env(tmp_path, monkeypatch):
                         str(data / "medical_records.json"))
     monkeypatch.setattr(config, "AGENT_TRACES_FILE", str(tmp_path / "agent_traces.json"))
     monkeypatch.setattr(rag_tool, "_vectorstore", None)
+    # Keep embedding models (and any download they would trigger) out of UI tests.
+    monkeypatch.setattr(rag_tool, "rebuild_vectorstore", lambda: {"success": True})
+    monkeypatch.setattr(healthcare_agent, "retrieve_patient_context",
+                        lambda q, pid=None: {"success": False})
     return {"data": data, "uploads": uploads}
+
+
+def future_slots(env):
+    """Seeded slot dates are fixed; move them past today so booking is reachable."""
+    path = env["data"] / "doctors.json"
+    docs = json.loads(path.read_text())
+    start = date.today() + timedelta(days=7)
+    for d in docs:
+        for i, s in enumerate(d["available_slots"]):
+            s["date"] = (start + timedelta(days=i)).isoformat()
+    path.write_text(json.dumps(docs))
 
 
 def run_page(page, **session):
@@ -120,3 +137,39 @@ def test_scenario_preset_fills_query(app_env):
     query.input("my own edit").run()  # a typed edit is kept, not overwritten
     assert next(t for t in at.text_area if t.label == "Query").value == "my own edit"
     assert not at.exception
+
+
+def test_booking_and_cancel_confirmations_survive_rerun(app_env):
+    future_slots(app_env)
+    at = run_page("pages/1_Patient_View.py")
+    next(s for s in at.selectbox if s.label == "Specialization").select("Cardiologist").run()
+    next(b for b in at.button if b.label == "Search Doctors").click().run()
+    next(b for b in at.button if b.label == "✅ Book").click().run()
+    assert any("Appointment booked!" in s.value for s in at.success)
+    next(b for b in at.button if b.label == "Cancel" and b.key.startswith("cx_A") and b.key != "cx_A001").click().run()
+    assert any("cancelled" in s.value for s in at.success)
+    assert not at.exception
+
+
+def test_add_record_confirmation_survives_rerun(app_env):
+    at = run_page("pages/1_Patient_View.py")
+    {t.label: t for t in at.text_input}["Diagnosis *"].input("Synthetic check-up")
+    {t.label: t for t in at.text_input}["Doctor Name *"].input("Dr. Demo")
+    {t.label: t for t in at.text_area}["Treatment *"].input("Rest")
+    next(b for b in at.button if "Save Record" in b.label).click().run()
+    assert any(s.value.startswith("Record added for") for s in at.success)
+
+
+def test_vault_delete_confirmation_survives_rerun(app_env):
+    seed_vault(app_env)
+    at = run_page("pages/1_Patient_View.py")
+    next(b for b in at.button if b.label == "🗑️ Delete").click().run()
+    assert any("deleted successfully" in s.value for s in at.success)
+    assert not at.exception
+
+
+def test_agent_plan_stays_in_sidebar_after_rerun(app_env):
+    at = run_page("pages/1_Patient_View.py")
+    next(b for b in at.button if b.key == "sp_1").click().run()  # booking prompt, no web search
+    assert "🧠 Agent Plan" in [h.value for h in at.sidebar.subheader]
+    assert "✅ `book_appointment`" in [m.value for m in at.sidebar.markdown]
