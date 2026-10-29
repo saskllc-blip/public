@@ -169,6 +169,8 @@ def build_dataset(seed: int = SEED) -> dict:
     vacant_slots = set(rng.sample(range(N_PROPERTIES), 4))
     no_prior_slots = set(rng.sample(range(N_PROPERTIES), 6))
     financed_slots = set(rng.sample(range(N_PROPERTIES), 21))
+    # Three active 24-month leases end this month so "Renewal pending" always has rows.
+    renewal_slots = set(rng.sample([i for i in range(N_PROPERTIES) if i not in vacant_slots and CITIES[i // 3]["locale"] != "de"], 3))
 
     def new_tenant(locale: str, property_id: str) -> str:
         first_names, last_names = NAMES[locale]
@@ -235,6 +237,8 @@ def build_dataset(seed: int = SEED) -> dict:
             else:
                 cur_months = rng.choice([24, 24, 24, 36]) if city["locale"] != "de" else 36
                 elapsed = rng.randint(12, min(23, cur_months - 1))
+                if slot in renewal_slots:
+                    cur_months, elapsed = 24, 23
                 cur_start = _add_months(date(AS_OF.year, AS_OF.month, 1), -elapsed)
                 status = "active"
             if slot not in no_prior_slots:
