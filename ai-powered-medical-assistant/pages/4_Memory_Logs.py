@@ -32,8 +32,8 @@ with tab1:
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Total Sessions",   len(traces))
         c2.metric("Unique Patients",  len({t.get("patient_id","?") for t in traces if t.get("patient_id")}))
-        c3.metric("Total Plan Steps", sum(len(t.get("plan_steps",[])) for t in traces))
-        avg_steps = sum(len(t.get("execution_steps",[])) for t in traces) / len(traces)
+        c3.metric("Total Plan Steps", sum(len(t.get("plan",[])) for t in traces))
+        avg_steps = sum(len(t.get("steps",[])) for t in traces) / len(traces)
         c4.metric("Avg Steps/Session", f"{avg_steps:.1f}")
         st.divider()
 
@@ -42,8 +42,8 @@ with tab1:
             sid = trace.get("session_id","?")
             inp = trace.get("user_input","")[:60]
             pid = trace.get("patient_id","N/A")
-            steps = trace.get("execution_steps",[])
-            plan  = trace.get("plan_steps",[])
+            steps = trace.get("steps",[])
+            plan  = trace.get("plan",[])
 
             with st.expander(f"🔷 Session `{sid}` | {ts} | Patient: `{pid}`  —  *{inp}…*"):
                 col_l, col_r = st.columns([1, 2])
@@ -64,7 +64,7 @@ with tab1:
                             unsafe_allow_html=True)
 
                 st.markdown("**💬 Response Preview**")
-                resp = trace.get("response","")
+                resp = trace.get("final_response","")
                 st.markdown(resp[:600] + ("…" if len(resp) > 600 else ""))
 
         # Timeline chart
@@ -72,7 +72,7 @@ with tab1:
             st.divider()
             df_t = pd.DataFrame([{
                 "timestamp": t.get("timestamp",""),
-                "steps": len(t.get("execution_steps",[])),
+                "steps": len(t.get("steps",[])),
                 "session": t.get("session_id","?")[:6],
                 "patient": t.get("patient_id","?")
             } for t in traces])
@@ -240,7 +240,7 @@ with tab3:
             ms_l, ms_r = st.columns(2)
             with ms_l:
                 st.markdown("**Short-term turns:**")
-                for turn in snap.get("short_term",[]):
+                for turn in snap.get("short_term_history",[]):
                     role = "👤" if turn["role"]=="user" else "🤖"
                     st.markdown(f"{role} {turn['content'][:80]}")
             with ms_r:
