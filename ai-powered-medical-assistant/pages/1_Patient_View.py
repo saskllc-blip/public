@@ -338,7 +338,9 @@ with tab5:
     ])
     
     filter_mapping = [None, "lab_result", "imaging", "discharge_summary", "other"]
-    
+
+    # A record renders in both "All" and its own type tab, so widget keys
+    # carry the tab index to stay unique across tabs.
     for idx, filter_tab in enumerate([filter_tab1, filter_tab2, filter_tab3, filter_tab4, filter_tab5]):
         with filter_tab:
             record_filter = filter_mapping[idx]
@@ -379,7 +381,7 @@ with tab5:
                                             value=rec["extracted_text"],
                                             height=200,
                                             disabled=True,
-                                            key=f"text_{rec['record_id']}"
+                                            key=f"text_{idx}_{rec['record_id']}"
                                         )
                             
                             with col_actions:
@@ -392,11 +394,11 @@ with tab5:
                                         data=file_data,
                                         file_name=rec["filename"],
                                         mime="application/octet-stream",
-                                        key=f"dl_{rec['record_id']}"
+                                        key=f"dl_{idx}_{rec['record_id']}"
                                     )
                                 
                                 # Delete button
-                                if st.button("🗑️ Delete", key=f"del_{rec['record_id']}", type="secondary"):
+                                if st.button("🗑️ Delete", key=f"del_{idx}_{rec['record_id']}", type="secondary"):
                                     del_result = delete_record(rec["record_id"])
                                     if del_result.get("success"):
                                         st.success("Deleted!")
