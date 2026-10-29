@@ -2,10 +2,12 @@
 import json
 import os
 import sys
+import pandas as pd
 import streamlit as st
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tools.ehr_tool import get_all_patients, get_medical_history, add_medical_record
+from tools.visit_history_tool import get_patient_visits
 from tools.appointment_tool import (get_available_slots, book_appointment,
                                      get_appointments_by_patient, cancel_appointment)
 from tools.rag_tool import rebuild_vectorstore
@@ -75,6 +77,48 @@ with tab1:
                 st.markdown(f"**Doctor:** {entry['doctor']}")
                 st.markdown(f"**Treatment:** {entry['treatment']}")
                 st.markdown(f"**Notes:** {entry['notes']}")
+
+        # Longitudinal visit history (data/visit_history.json). Rendered as
+        # tables/charts only — no per-record widget keys to collide.
+        vh = get_patient_visits(pid)
+        visits = vh.get("visits", []) if vh.get("success") else []
+        if visits:
+            st.divider()
+            st.markdown(f"#### 🩺 Visit History — {len(visits)} past visits")
+            df_v = pd.DataFrame([{
+                "Date": v["date"], "Type": v["visit_type"], "Doctor": v["doctor_name"],
+                "Diagnosis": v["diagnosis"], "Status": v["control_status"],
+                "Complaint": v["chief_complaint"],
+                "BP": f"{v['vitals']['bp_systolic']}/{v['vitals']['bp_diastolic']}",
+                "HR": v["vitals"]["heart_rate"], "BMI": v["vitals"]["bmi"],
+                "Treatment": v["treatment"],
+            } for v in visits])
+            st.dataframe(df_v, use_container_width=True, hide_index=True)
+
+            st.markdown("##### 📈 Vitals Trend")
+            df_t = pd.DataFrame([{
+                "Date": v["date"], "Systolic": v["vitals"]["bp_systolic"],
+                "Diastolic": v["vitals"]["bp_diastolic"], "Heart rate": v["vitals"]["heart_rate"],
+            } for v in visits]).sort_values("Date").set_index("Date")
+            st.line_chart(df_t)
+
+            meds = vh["medications"]["events"]
+            if meds:
+                st.markdown("##### 💊 Medication History (from visits)")
+                st.dataframe(pd.DataFrame([{
+                    "Date": m["date"], "Action": m["action"].replace("_", " ").title(),
+                    "Medication": m["medication"], "Previous": m["previous"] or "",
+                    "Doctor": m["doctor"],
+                } for m in reversed(meds)]), use_container_width=True, hide_index=True)
+
+            labs = vh.get("lab_results", [])
+            if labs:
+                st.markdown(f"##### 🧪 Lab Results — {len(labs)} sets")
+                st.dataframe(pd.DataFrame([{
+                    "Date": l["date"], "Panel": l["panel"], "Test": r["test"],
+                    "Value": r["value"], "Unit": r["unit"],
+                    "Reference": r["reference_range"], "Flag": r["flag"],
+                } for l in labs for r in l["results"]]), use_container_width=True, hide_index=True)
 
         ua = patient.get("upcoming_appointment")
         if ua:
