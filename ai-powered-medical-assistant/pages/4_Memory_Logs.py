@@ -170,10 +170,15 @@ with tab3:
             "Tell me about rheumatoid arthritis symptoms and treatment",
     }
 
-    preset = st.selectbox("Quick Scenario", list(preset_scenarios.keys()))
+    # A keyed text_area ignores later changes to value=, so the preset is
+    # pushed into its session-state slot when the selection changes.
+    def _apply_preset():
+        st.session_state.scenario_query_input = preset_scenarios[st.session_state.scenario_preset]
+
+    st.selectbox("Quick Scenario", list(preset_scenarios.keys()),
+                 key="scenario_preset", on_change=_apply_preset)
     scenario_query = st.text_area(
         "Query",
-        value=preset_scenarios.get(preset, ""),
         height=80,
         key="scenario_query_input")
 

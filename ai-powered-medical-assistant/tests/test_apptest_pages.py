@@ -109,3 +109,14 @@ def test_scenario_tester_shows_short_term_memory(app_env):
     md = [m.value for m in at.markdown]
     assert "👤 synthetic question" in md
     assert "🤖 synthetic answer" in md
+
+
+def test_scenario_preset_fills_query(app_env):
+    at = run_page("pages/4_Memory_Logs.py")
+    preset = next(s for s in at.selectbox if s.label == "Quick Scenario")
+    preset.select("🩺 Book cardiology appointment").run()
+    query = next(t for t in at.text_area if t.label == "Query")
+    assert query.value == "I need to see a cardiologist as soon as possible"
+    query.input("my own edit").run()  # a typed edit is kept, not overwritten
+    assert next(t for t in at.text_area if t.label == "Query").value == "my own edit"
+    assert not at.exception
