@@ -37,7 +37,6 @@ def app_env(tmp_path, monkeypatch):
     monkeypatch.setattr(medical_vault_tool, "UPLOADS_DIR", str(uploads))
     monkeypatch.setattr(medical_vault_tool, "MEDICAL_RECORDS_FILE",
                         str(data / "medical_records.json"))
-    monkeypatch.setattr(config, "AGENT_TRACES_FILE", str(tmp_path / "agent_traces.json"))
     monkeypatch.setattr(rag_tool, "_vectorstore", None)
     # Keep embedding models (and any download they would trigger) out of UI tests.
     monkeypatch.setattr(rag_tool, "rebuild_vectorstore", lambda: {"success": True})

@@ -52,3 +52,8 @@ def isolated_eval_log(tmp_path, monkeypatch):
     import config
 
     monkeypatch.setattr(config, "EVAL_LOGS_FILE", str(tmp_path / "eval_logs_test.json"))
+    # Same reasoning for the tool-call log and agent traces: every tool
+    # function logs on each call, so without this a test run appended rows
+    # to the real logs/tool_logs.json that the dashboards read.
+    monkeypatch.setattr(config, "TOOL_LOGS_FILE", str(tmp_path / "tool_logs_test.json"))
+    monkeypatch.setattr(config, "AGENT_TRACES_FILE", str(tmp_path / "agent_traces_test.json"))
