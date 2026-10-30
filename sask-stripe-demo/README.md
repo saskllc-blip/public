@@ -13,7 +13,7 @@ verification, retries, and idempotency.
 
 ## What you can show a buyer
 
-1. **Storefront** — four fictional products, a cart, and order records with
+1. **Storefront** — twelve fictional products (loaded from `data/products.json`), a cart, and order records with
    visible status (`pending` → `paid` → `fulfilled` / `failed` / `refunded`).
 2. **Simulated checkout** — card form accepts `4242 4242 4242 4242` (success)
    and `4000 0000 0000 0002` (decline), labeled *simulated — no real charge*.
@@ -27,6 +27,22 @@ verification, retries, and idempotency.
    turn the toggle off, deliver again → processed.
 6. **Explainers** — short plain-English copy on why webhooks, signatures, and
    idempotency matter.
+7. **90-day payment history (synthetic)** — a *Dashboard (90 days)* tab with
+   gross / refunds / disputes / net volume and daily charts, plus searchable
+   order history (Orders tab) and webhook event history (Webhook console tab)
+   over ~300 orders, ~440 payment attempts, and ~1,200 Stripe-shaped events.
+   Every number is computed from the dataset; nothing is hardcoded.
+
+## Synthetic data
+
+All history lives in `data/*.json`, written by `data/generate_data.py`
+(fixed seed `20261025`, fixed anchor `2026-10-25T23:59:59Z`, 90-day window).
+Customers are invented names on `example.com` / `example.org`; products are
+fictional; card details are Stripe test-card shapes. Regenerate (byte-identical):
+
+```bash
+python3 data/generate_data.py
+```
 
 ## Run locally (standalone)
 
@@ -50,11 +66,15 @@ streamlit run products/sask_stripe_demo/app.py
 
 ## Tests
 
-From `KK_AI_PLATFORM` root:
+From this folder (needs `pip install -r requirements.txt pytest`):
 
 ```bash
-python3 -m pytest tests/test_sask_stripe_demo.py -q
+python3 -m pytest tests -q
 ```
+
+Covers generator determinism, dataset size bands, referential integrity,
+per-order lifecycle/timestamp ordering, money reconciliation, and a headless
+Streamlit AppTest of every tab.
 
 ## Streamlit Community Cloud (free tier)
 
@@ -91,7 +111,10 @@ idempotency duplicate, refunded order.
 
 ![Architecture](docs/images/architecture.png)
 
-See [docs/architecture.md](docs/architecture.md).
+See [docs/architecture.md](docs/architecture.md). Draw IO source:
+[docs/architecture.drawio](docs/architecture.drawio) — includes the read-only
+synthetic data layer (`data/*.json` → `history.py` → Dashboard / history views)
+and the offline generator.
 
 ---
 

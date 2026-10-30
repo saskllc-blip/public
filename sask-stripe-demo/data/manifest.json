@@ -1,0 +1,28 @@
+{
+  "anchor": "2026-10-25T23:59:59Z",
+  "counts": {
+    "customers": 120,
+    "disputes": 3,
+    "orders": 300,
+    "payment_attempts": 440,
+    "products": 12,
+    "refunds": 15,
+    "webhook_events": 1202
+  },
+  "dataset_sha256": "f81ada96291f4e19fd8dc0617bf07c3fe71eae3d9de1e13d6022c4a15adfda18",
+  "files": {
+    "customers.json": "2244d7878be7e8c6a1be94bb7144bd9ec07d58ec98abb6933b232b21f9e722c2",
+    "disputes.json": "f8f607caad69ce3514c0ca3a2c4cac1916118e87329e5b743b4cb68056b904d3",
+    "orders.json": "972cf19171637e33b331d7d4c5907d55fa137f04a1e2c901dc4841e9296c06bc",
+    "payment_attempts.json": "35d2b4d7b769d157ffb060b43ab88c1110ea962f5c7199ebf0f9d45618bf3a96",
+    "products.json": "e5d8b8023a7aa90ba676b4c67a1dd2dc0f17922480945d3eb66adc6ee86cac50",
+    "refunds.json": "b86a6f03af4b92d2d5f484b6d2177c3857f88b119dee414f44714fd1f66ddd5d",
+    "webhook_events.json": "3900a7f47528d828006d88c5f58c30e7aaa7a85b59e7793ae4945b91081e5d46"
+  },
+  "generated": "synthetic-fictional-only",
+  "generator": "data/generate_data.py",
+  "generator_version": "1.0.0",
+  "seed": 20261025,
+  "window_days": 90,
+  "window_start": "2026-07-28T00:00:00Z"
+}

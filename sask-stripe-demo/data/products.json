@@ -1,0 +1,14 @@
+[
+{"active":true,"currency":"usd","description":"Fictional one-day review of webhook and auth patterns.","id":"prod-api-audit","name":"API Integration Audit","price_cents":14900},
+{"active":true,"currency":"usd","description":"Sample handlers for signature checks and retries (demo only).","id":"prod-webhook-kit","name":"Webhook Starter Kit","price_cents":7900},
+{"active":true,"currency":"usd","description":"Workshop-style walkthrough of duplicate-event handling.","id":"prod-idempotency-clinic","name":"Idempotency Clinic","price_cents":9900},
+{"active":true,"currency":"usd","description":"Fictional runbooks for payment_failed and refund events.","id":"prod-retry-playbook","name":"Retry Playbook Pack","price_cents":5900},
+{"active":true,"currency":"usd","description":"One-page fictional reference for verifying webhook signatures.","id":"prod-signature-cheatsheet","name":"Signature Check Cheat Sheet","price_cents":1500},
+{"active":true,"currency":"usd","description":"Printable deck of simulated decline and success scenarios.","id":"prod-test-card-deck","name":"Test Card Scenario Deck","price_cents":2900},
+{"active":true,"currency":"usd","description":"Fictional async review of refund and dispute handling.","id":"prod-refund-flow-review","name":"Refund Flow Review","price_cents":4900},
+{"active":true,"currency":"usd","description":"Guided lab replaying out-of-order webhook deliveries (demo only).","id":"prod-event-replay-lab","name":"Event Replay Lab","price_cents":19900},
+{"active":true,"currency":"usd","description":"Fictional two-day sprint on checkout error paths.","id":"prod-checkout-hardening","name":"Checkout Hardening Sprint","price_cents":24900},
+{"active":true,"currency":"usd","description":"Fictional migration plan from ad-hoc charges to PaymentIntents.","id":"prod-billing-migration","name":"Billing Migration Plan","price_cents":34900},
+{"active":true,"currency":"usd","description":"Evidence templates for simulated chargeback responses.","id":"prod-dispute-defense","name":"Dispute Defense Toolkit","price_cents":44900},
+{"active":true,"currency":"usd","description":"Fictional monthly retainer for payment-integration support.","id":"prod-integration-retainer","name":"Integration Retainer (Monthly)","price_cents":49900}
+]
