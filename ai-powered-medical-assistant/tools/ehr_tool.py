@@ -62,7 +62,7 @@ def get_medical_history(patient_id: str) -> Dict[str, Any]:
         history = p.get("medical_history", [])
         text = (f"Patient: {p['name']}, Age: {p['age']}, Gender: {p['gender']}, "
                 f"Blood Group: {p['blood_group']}\n\n"
-                f"Allergies: {', '.join(p.get('allergies',['None']))}\n\n"
+                f"Allergies: {', '.join(p.get('allergies') or ['None'])}\n\n"
                 "Current Medications:\n")
         for m in p.get("current_medications", []):
             text += f"  - {m}\n"
