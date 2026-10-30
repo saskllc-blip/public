@@ -11,7 +11,7 @@ A session-isolated Streamlit console for a fictional rental portfolio: occupancy
 Scope of this folder:
 
 - Sidebar **radio** navigation (not tabs): Dashboard, Properties, Tenants & Leases, Payments, Mortgages.
-- Frozen dataclasses + a deterministic daily seed + one in-memory service.
+- Frozen dataclasses + a committed synthetic dataset (`data/rentals.json`, date-shifted on load) + one in-memory service.
 - No database, external service, analytics, authentication, or paid API.
 
 Out of scope: real properties, Plaid/bank links, accounting export, user accounts.
@@ -28,13 +28,13 @@ Live hosted demo: https://public-es3d2bknt56jnfpclfltnu.streamlit.app/
 | `data/generate_data.py` | Deterministic generator (seed `20261025`) that writes `data/rentals.json` byte-for-byte. 100% fictional: real cities/neighbourhoods, invented streets, tenants, and records; USD amounts calibrated per locale. |
 | `models.py` | Frozen dataclasses: `Property` (+ city, country, neighbourhood, specs, purchase), `Tenant`, `Lease` (+ deposit; `renewal_pending` if active and ≤30 days), `Payment` (+ `amount_paid` for partials; `effective_status` pending→overdue when `due_date < today`), `Expense`, `Mortgage` (`ltv`). |
 
-**Code vs README:** `update_property` and `delete_property` exist on `DemoPortfolio` but are **not wired in the UI**. `kpis()` also computes collected/pending totals; the Dashboard surfaces **Overdue** only (plus occupancy, rent roll, vacant units). There is no per-property performance page.
+**Code vs README:** `update_property` and `delete_property` exist on `DemoPortfolio` but are **not wired in the UI**. The Dashboard shows all `kpis()` totals (including collected and pending) plus a by-country table. Per-property detail is limited to the 12-month occupancy column on the Properties page.
 
 ## Data-flow walkthroughs
 
 ### First load / Reset
 
-1. Missing `st.session_state.portfolio` → `DemoPortfolio()` → `build_seed()` → five lists copied onto the service.
+1. Missing `st.session_state.portfolio` → `DemoPortfolio()` → `build_seed()` → six lists copied onto the service.
 2. **Reset to demo data** replaces the session object with a new `DemoPortfolio()` and `st.rerun()`.
 
 ### Dashboard KPIs
@@ -81,7 +81,7 @@ No disk, no SQLite, no env vars. Refresh or Reset rebuilds from `build_seed()`.
 ## External services and dependencies
 
 - Streamlit `>=1.28,<2`
-- Standard library only (`dataclasses`, `datetime`, `json`, `uuid`)
+- Standard library only (`dataclasses`, `datetime`, `json`, `pathlib`, `functools`, `uuid`; the offline generator also uses `random`, `unicodedata`)
 - Hosted on Streamlit Cloud for the public demo
 
 ## Key design decisions and constraints
@@ -89,14 +89,14 @@ No disk, no SQLite, no env vars. Refresh or Reset rebuilds from `build_seed()`.
 - **Session isolation.** Every visitor gets their own `DemoPortfolio`. Nothing is shared or persisted.
 - **Relative seed dates.** `build_seed(today)` keeps the overdue row and the 30-day renewal flag true on any calendar day.
 - **Frozen dataclasses.** Updates go through `replace()` so the UI cannot mutate fields in place by accident.
-- **Synthetic names only.** Example Way / Fiction Avenue / Avery Example / Morgan Sample.
-- **Thin UI.** `app.py` is one file; business rules stay in `service.py` so the same methods could be unit-tested without Streamlit (there is no in-tree test pack today).
+- **Fictional records only.** Real cities and neighbourhoods; invented street names, tenants, and records (`@example.demo` emails).
+- **Thin UI.** `app.py` is one file; business rules stay in `service.py` so the same methods are unit-tested without Streamlit (`tests/test_dataset.py`), with a Streamlit AppTest smoke pack in `tests/test_app.py`.
 
 ## How to extend it
 
 1. **Wire update/delete:** add forms in the Properties page that call the existing `update_property` / `delete_property` (delete already refuses a property with an active lease).
-2. **Surface collected/pending KPIs:** `kpis()["payments"]` already has the totals; add metric widgets.
-3. **Richer seed:** extend `build_seed()`; keep names obviously fictional.
+2. **Per-property drill-down:** combine `occupancy_history`, that property's expenses, and its payment ledger on one page.
+3. **Richer seed:** extend `data/generate_data.py` (same seed), then regenerate `data/rentals.json`. Keep every record fictional.
 4. **Do not** add a real database or tenant PII in this public folder.
 
 Run from this folder: `python3 -m pytest tests -q` (needs `pytest`; 28 tests incl. Streamlit AppTest). Regenerate data with `python3 data/generate_data.py`.
