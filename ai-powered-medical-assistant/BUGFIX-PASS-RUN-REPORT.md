@@ -122,3 +122,29 @@ Severities: **crash**, **wrong data**, **cosmetic**, **hygiene** (repo/test safe
 - **Duration:** about 25 minutes of wall-clock time for the work in this report.
 - **What used compute:** two throwaway virtualenvs and repeated AppTest sweeps. No other paid services were used: no OpenAI calls, and the test suite structurally blocks network access and keys.
 - **Dollar figure:** **not visible from inside the session.** The session metadata only reports `rateLimitType: ccr_promotional`, resetting 2026-11-05 00:00 UTC. Infra should read the actual credit drawn for this session from the claude.ai usage page. I haven't estimated it here, to avoid putting a made-up number in the ledger.
+
+## Post-merge sequencing (2026-10-30)
+
+- **What happened:** PR #6 (MediAssist data-depth) merged into `main` before this PR, which then conflicted with `main`.
+- **The conflict:** exactly one file, `ai-powered-medical-assistant/.gitignore`. Both sides had added it:
+  - this branch's version had the comment header and `data/medical_records.json`;
+  - `main`'s version had `*.pyc` and `.pytest_cache/`.
+- **The fix:** merged `origin/main` (`5fa3c2d`) into this branch with a merge commit (no rebase). The `.gitignore` conflict was resolved as the **union** of both versions, with no duplicates:
+  - comment header
+  - `__pycache__/`
+  - `*.pyc`
+  - `.pytest_cache/`
+  - `logs/`
+  - `uploads/`
+  - `data/medical_records.json`
+  - `.env`
+- **No other conflicts.** Git merged `pages/1_Patient_View.py` and `tools/ehr_tool.py` automatically (data-depth's visit-history wiring plus this pass's fixes).
+- **Re-run after the merge:**
+  - **pytest: 90 passed, 0 failed.** That's this pass's 62 plus 28 from data-depth (`test_visit_history.py` 22, `test_views_apptest.py` 6). Green on langchain 0.3.30 and 1.4.7.
+  - The new warnings are `Pandas4Warning`, raised inside Streamlit's own chart code. They are not test failures.
+- **AppTest flow sweep re-run**, because the merge touched app code: **0 exceptions** in all three runs:
+  - latest deps, seed dates as they are;
+  - latest deps, slot dates moved +184 days;
+  - langchain 0.3, slot dates moved +184 days.
+  - The vault fix (D1) and the post-booking confirmation (D6) both still hold.
+- **R1 and R2 are still open:** data-depth added a visit-history store but left `doctors.json` and `appointments.json` unchanged, so the slot dates are still stale and A001/A002 still sit on slots marked `booked: false`.
