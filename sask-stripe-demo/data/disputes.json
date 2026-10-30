@@ -1,0 +1,5 @@
+[
+{"amount_cents":2900,"charge_id":"ch_ZDjBfTHCy4lj5VcFfjJJz5xO","closed_at":"2026-09-06T22:41:50Z","created_at":"2026-08-27T22:54:52Z","currency":"usd","id":"dp_iXA2MQgv4lB0YIlO2vfmesJT","order_id":"ord_04b21dd437","payment_intent_id":"pi_InlnbV4asYCvGmYcICoQsbWz","reason":"product_not_received","status":"won"},
+{"amount_cents":2900,"charge_id":"ch_J6Wr2TwYnea9RaltQCulxXVF","closed_at":"2026-09-25T13:31:30Z","created_at":"2026-09-17T23:38:07Z","currency":"usd","id":"dp_Uklst4NaFCvGIjtR9AKax31i","order_id":"ord_0dc618da91","payment_intent_id":"pi_dXxfdMTgLEoFFBaUaHgs12oo","reason":"product_not_received","status":"lost"},
+{"amount_cents":5800,"charge_id":"ch_DlUBNqwfFK8j1U8kqHZTRhJs","closed_at":null,"created_at":"2026-09-08T17:12:53Z","currency":"usd","id":"dp_nFv8Q63Yf7ZMjHni3dDehaBW","order_id":"ord_ebea4208ca","payment_intent_id":"pi_As1gHOh6WKNo4Odjmy8Igtrj","reason":"unrecognized","status":"needs_response"}
+]

@@ -29,7 +29,8 @@ to LLM Mode.
 pytest
 ```
 
-14 tests, well under a second, and — this is deliberate, not a limitation —
+57 tests (including Streamlit AppTest runs of every view), a few seconds,
+and — this is deliberate, not a limitation —
 **the suite cannot reach the network or bill an API key even if one is
 exported in your shell.** `tests/conftest.py` clears `OPENAI_API_KEY` before
 every test runs, session-wide. A portfolio artifact whose test suite could
@@ -70,6 +71,35 @@ and nothing else in the module needs to change.
 
 ## Architecture
 
+![Architecture](docs/images/architecture.png)
+
+Draw IO source: [`docs/architecture.drawio`](docs/architecture.drawio) (hand-authored
+XML; the PNG is rendered from the same cell geometry). It describes the code
+on `main` — four Streamlit pages over `tools/*.py`, the `HealthcareAgent`
+orchestrator, JSON data files and runtime logs — plus the visit-history store
+(★ in the diagram).
+
+### Visit history (synthetic, longitudinal)
+
+- **Store:** `data/visit_history.json` — past visits (`visit_id`, unique) and
+  lab result sets (`lab_id`, unique, each pointing at a real `visit_id`). It is
+  a separate file from the Medical Vault's `data/medical_records.json`, which
+  history never writes to.
+- **Generator:** `python scripts/generate_visit_history.py` (fixed seed
+  `20261029`, deterministic, idempotent; `--check` exits 1 if the committed
+  file is stale). It reproduces every `patients.json` `medical_history` entry
+  verbatim as an anchor visit and weaves generated visits around it — never
+  after the patient's `last_visit`. Medication changes replay to each
+  patient's `current_medications` exactly.
+- **Read path:** `tools/visit_history_tool.py` (read-only). Patient View shows
+  the visit table, vitals trend, medication history and labs; Doctor View
+  shows each doctor's past visits; the EHR history text (agent + Doctor View
+  lookup) appends the visit timeline. All rendered as tables/charts — no
+  per-record widget keys.
+- 100% synthetic, fictional data. No real patients or records.
+
+### Directory layout
+
 ```
 ├── app.py                    ← Home screen, navigation
 ├── pages/
@@ -86,7 +116,10 @@ and nothing else in the module needs to change.
 │   ├── ehr_tool.py
 │   ├── medical_search_tool.py
 │   ├── medical_vault_tool.py ← 🆕 File upload, OCR extraction, vault management
+│   ├── visit_history_tool.py ← Read-only visit history + medication replay
 │   └── rag_tool.py           ← FAISS RAG
+├── scripts/
+│   └── generate_visit_history.py ← Deterministic synthetic visit-history generator
 ├── evaluation/
 │   └── evaluator.py          ← QA evaluation, LLM-as-judge, provenance
 ├── utils/
@@ -94,12 +127,16 @@ and nothing else in the module needs to change.
 ├── tests/
 │   ├── conftest.py           ← Structural no-network-by-default fixture
 │   ├── test_evaluator.py
-│   └── test_medical_vault.py ← 🆕 Medical vault tests
+│   ├── test_medical_vault.py ← 🆕 Medical vault tests
+│   ├── test_visit_history.py ← Generator + dataset integrity/continuity
+│   └── test_views_apptest.py ← AppTest of every view with full history
 ├── data/                     ← Sample patient/doctor/appointment records
-│                                bundled for local demo use
+│                                + visit_history.json (generated)
 ├── uploads/                  ← 🆕 Medical record files (gitignored)
 ├── docs/
-│   └── MEDICAL_VAULT.md      ← 🆕 Vault documentation
+│   ├── MEDICAL_VAULT.md      ← 🆕 Vault documentation
+│   ├── architecture.drawio   ← Architecture diagram source
+│   └── images/architecture.png
 └── logs/                     ← Auto-created at runtime
 ```
 

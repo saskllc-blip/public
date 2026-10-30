@@ -1,22 +1,34 @@
-"""Deterministic, conspicuously fictional demo records."""
+"""Deterministic, conspicuously fictional demo records.
+
+Loads the committed synthetic dataset (data/rentals.json, produced by
+data/generate_data.py) and shifts every date by (today - as_of) so overdue
+rows and renewal flags stay true on any calendar day.
+"""
 from __future__ import annotations
-from datetime import date, timedelta
-from models import Lease, Mortgage, Payment, Property, Tenant
+import json
+from datetime import date
+from functools import lru_cache
+from pathlib import Path
+from models import Expense, Lease, Mortgage, Payment, Property, Tenant
+
+DATA_PATH = Path(__file__).resolve().parent / "data" / "rentals.json"
+
+@lru_cache(maxsize=1)
+def load_dataset() -> dict:
+    """The committed raw dataset (ISO date strings, USD amounts)."""
+    return json.loads(DATA_PATH.read_text(encoding="utf-8"))
+
+def dataset_as_of() -> date:
+    return date.fromisoformat(load_dataset()["as_of"])
 
 def build_seed(today: date | None = None) -> dict[str, list[object]]:
-    today = today or date.today()
-    properties = [
-        Property("prop-1", "Aurora Demo Flats", "101 Example Way, Demo City", "Apartments", 8, 2, 800_000),
-        Property("prop-2", "Cedar Sample Homes", "202 Fiction Avenue, Sample Town", "Townhomes", 4, 0, 560_000),
-    ]
-    tenants = [Tenant("tenant-1", "Avery Example", "avery@example.demo", "prop-1"), Tenant("tenant-2", "Morgan Sample", "morgan@example.demo", "prop-2")]
-    leases = [
-        Lease("lease-1", "tenant-1", "prop-1", 1_250, today - timedelta(days=335), today + timedelta(days=30)),
-        Lease("lease-2", "tenant-2", "prop-2", 1_600, today - timedelta(days=180), today + timedelta(days=185)),
-    ]
-    payments = [Payment("payment-1", "lease-1", today - timedelta(days=10), 1_250), Payment("payment-2", "lease-2", today, 1_600)]
-    mortgages = [
-        Mortgage("mortgage-1", "prop-1", 440_000, 4.25, 2_450, today + timedelta(days=365 * 15)),
-        Mortgage("mortgage-2", "prop-2", 280_000, 4.75, 1_780, today + timedelta(days=365 * 18)),
-    ]
-    return {"properties": properties, "tenants": tenants, "leases": leases, "payments": payments, "mortgages": mortgages}
+    raw = load_dataset(); shift = (today or date.today()) - dataset_as_of()
+    def day(value: str | None) -> date | None:
+        return date.fromisoformat(value) + shift if value else None
+    properties = [Property(**{**x, "purchase_date": day(x["purchase_date"])}) for x in raw["properties"]]
+    tenants = [Tenant(**x) for x in raw["tenants"]]
+    leases = [Lease(**{**x, "start_date": day(x["start_date"]), "end_date": day(x["end_date"])}) for x in raw["leases"]]
+    payments = [Payment(**{**x, "due_date": day(x["due_date"]), "collected_date": day(x["collected_date"])}) for x in raw["payments"]]
+    expenses = [Expense(**{**x, "date": day(x["date"])}) for x in raw["expenses"]]
+    mortgages = [Mortgage(**{**x, "maturity_date": day(x["maturity_date"])}) for x in raw["mortgages"]]
+    return {"properties": properties, "tenants": tenants, "leases": leases, "payments": payments, "expenses": expenses, "mortgages": mortgages}

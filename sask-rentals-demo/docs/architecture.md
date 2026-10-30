@@ -24,8 +24,9 @@ Live hosted demo: https://public-es3d2bknt56jnfpclfltnu.streamlit.app/
 |--------|----------------|
 | `app.py` | Entry point. `st.set_page_config`, creates `st.session_state.portfolio = DemoPortfolio()` once, fictional-data banner, sidebar radio + **Reset to demo data**, page bodies (metrics, dataframes, Add property form, Mark collected, mortgage table). |
 | `service.py` `DemoPortfolio` | In-memory operations: `add_property`, `update_property`, `delete_property`, `collect_payment`, `kpis()`, `mortgage_summary()`, `_property_index`. Raises `PortfolioError` for UI-safe validation. |
-| `seed.py` `build_seed(today)` | Two properties (Aurora Demo Flats, Cedar Sample Homes), two tenants (Avery Example, Morgan Sample), two leases (one expiring in 30 days so **Renewal pending** shows), two payments (one overdue, one due today), two mortgages. Dates are relative to `today`. |
-| `models.py` | Frozen dataclasses: `Property`, `Tenant`, `Lease` (`renewal_pending` if active and ≤30 days), `Payment` (`effective_status` pending→overdue when `due_date < today`), `Mortgage` (`ltv`). |
+| `seed.py` `build_seed(today)` | Loads the committed synthetic dataset `data/rentals.json` (30 properties in 10 cities / 9 countries, 54 leases, 972 payments, 559 expenses, 21 mortgages) and shifts every date by `today - as_of`, so overdue rows and **Renewal pending** flags stay true on any day. |
+| `data/generate_data.py` | Deterministic generator (seed `20261025`) that writes `data/rentals.json` byte-for-byte. 100% fictional: real cities/neighbourhoods, invented streets, tenants, and records; USD amounts calibrated per locale. |
+| `models.py` | Frozen dataclasses: `Property` (+ city, country, neighbourhood, specs, purchase), `Tenant`, `Lease` (+ deposit; `renewal_pending` if active and ≤30 days), `Payment` (+ `amount_paid` for partials; `effective_status` pending→overdue when `due_date < today`), `Expense`, `Mortgage` (`ltv`). |
 
 **Code vs README:** `update_property` and `delete_property` exist on `DemoPortfolio` but are **not wired in the UI**. `kpis()` also computes collected/pending totals; the Dashboard surfaces **Overdue** only (plus occupancy, rent roll, vacant units). There is no per-property performance page.
 
@@ -43,9 +44,12 @@ Live hosted demo: https://public-es3d2bknt56jnfpclfltnu.streamlit.app/
 - `occupancy_rate` = `(total_units - vacant_units) / total_units * 100`
 - `rent_roll` = sum of `monthly_rent` for `status == "active"` leases
 - `vacant_units` = sum of `Property.vacant_units`
-- `payments` = amounts bucketed by `Payment.effective_status(today)`
+- `payments` = ledger: paid amounts are `collected`; any unpaid remainder is `pending` until due, then `overdue`
+- `portfolio_value` = sum of `Property.estimated_value`; `occupancy_from_leases(today)` re-derives occupancy from lease windows (tests assert it equals `occupancy_rate`)
 
-The four metric widgets show occupancy, rent roll, overdue $, vacant units.
+The sidebar **Country / City / Search** filters build a scoped `DemoPortfolio.filtered(...)` view; every page renders from that view, while actions (add property, mark collected) still go to the full portfolio.
+
+The Dashboard shows occupancy, rent roll, overdue $, vacant units, portfolio value, property count, collected-to-date, pending, and a by-country table.
 
 ### Add a property
 
@@ -61,22 +65,23 @@ Payments page lists every `Payment`. If `status != "collected"`, **Mark collecte
 
 ## Data model and where state lives
 
-`st.session_state.portfolio` holds five Python lists:
+`st.session_state.portfolio` holds six Python lists, loaded from the read-only `data/rentals.json`:
 
 | List | Seed rows | Notes |
 |------|-----------|--------|
-| `properties` | Aurora Demo Flats (8 units / 2 vacant / $800k), Cedar Sample Homes (4 / 0 / $560k) | Address strings are conspicuously fictional |
-| `tenants` | Avery Example, Morgan Sample | `@example.demo` emails |
-| `leases` | lease-1 ends `today+30` (renewal flag), lease-2 ends `today+185` | |
-| `payments` | payment-1 due `today-10` (overdue until collected), payment-2 due today | |
-| `mortgages` | $440k @ 4.25%, $280k @ 4.75% | |
+| `properties` | 30 (3 each in Memphis, Greensboro, Toronto, London, Berlin, Sydney, Bangalore, São Paulo, Cape Town, Singapore); 4 vacant | Real neighbourhoods, invented street names; 1 unit each |
+| `tenants` | 54, one per lease | Locale-appropriate fictional names; `@example.demo` emails |
+| `leases` | 54: 26 active, 28 ended; 24 properties have a prior lease; 4 renew within 30 days | No overlaps; rent rises from prior lease |
+| `payments` | 972 (12–24 per lease) | Mostly on time; ~12% late; a few partials; a few current-month overdue |
+| `expenses` | 559 | Quarterly management fees, annual inspections, repairs, turnover cleans |
+| `mortgages` | 21 | Amortized balances, locale-typical rates |
 
 No disk, no SQLite, no env vars. Refresh or Reset rebuilds from `build_seed()`.
 
 ## External services and dependencies
 
 - Streamlit `>=1.28,<2`
-- Standard library only (`dataclasses`, `datetime`, `uuid`)
+- Standard library only (`dataclasses`, `datetime`, `json`, `uuid`)
 - Hosted on Streamlit Cloud for the public demo
 
 ## Key design decisions and constraints
@@ -94,4 +99,4 @@ No disk, no SQLite, no env vars. Refresh or Reset rebuilds from `build_seed()`.
 3. **Richer seed:** extend `build_seed()`; keep names obviously fictional.
 4. **Do not** add a real database or tenant PII in this public folder.
 
-Run from this folder: `python3 -m pytest . -q` (expect 0 collected unless you add tests).
+Run from this folder: `python3 -m pytest tests -q` (needs `pytest`; 28 tests incl. Streamlit AppTest). Regenerate data with `python3 data/generate_data.py`.

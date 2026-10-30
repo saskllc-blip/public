@@ -20,6 +20,7 @@ except ImportError as exc:  # pragma: no cover - launch-time guard
         "streamlit is required. Install with: pip install -r requirements.txt"
     ) from exc
 
+import history
 from checkout import SIMULATED_LABEL, CheckoutError
 from store import DemoStore, StoreError
 
@@ -27,6 +28,12 @@ DEMO_BANNER = (
     "Demo store — simulated payments only. No real charges, no real payment data."
 )
 BRAND = "SASK LLC — SW Services"
+HISTORY_NOTE = (
+    "Synthetic history — fictional customers on example.com / example.org, "
+    "fictional products, simulated Stripe-shaped events. No real people, "
+    "businesses, or payments."
+)
+PAGE_SIZE = 25
 
 
 def _store() -> DemoStore:
@@ -258,6 +265,178 @@ def render_webhook_console(store: DemoStore) -> None:
             st.divider()
 
 
+def _history() -> history.Dataset:
+    """Read-only synthetic 90-day dataset (loaded once per process)."""
+    return history.load_dataset()
+
+
+def _page_controls(total: int, key: str) -> int:
+    """Page picker for long lists; returns the 1-based page number."""
+    pages = max(1, -(-total // PAGE_SIZE))
+    page = st.number_input(
+        f"Page (of {pages})", min_value=1, max_value=pages, value=1, step=1, key=key
+    )
+    st.caption(f"{total} matching rows · {PAGE_SIZE} per page")
+    return int(page)
+
+
+def _event_row(event: dict, customers: dict[str, dict]) -> str:
+    customer = customers.get(event["customer_id"], {})
+    return (
+        f"`{event['created_at']}` · **{event['type']}** · order `{event['order_id']}` · "
+        f"{customer.get('name', '—')} · event_id `{event['id']}`"
+    )
+
+
+def render_order_story(ds: history.Dataset, order_id: str) -> None:
+    """One order's full lifecycle: attempts, refund, dispute, webhook events."""
+    story = history.order_story(ds, order_id)
+    order, customer = story["order"], story["customer"]
+    st.markdown(
+        f"**{order['id']}** · status `{order['status']}` · "
+        f"{history.usd(order['total_cents'])} · channel `{order['channel']}`  \n"
+        f"customer: {customer['name']} <{customer['email']}> · "
+        f"payment_intent `{order['payment_intent_id']}`"
+    )
+    st.markdown(
+        "  \n".join(
+            f"{i['quantity']}× {i['name']} — {history.usd(i['unit_price_cents'] * i['quantity'])}"
+            for i in order["items"]
+        )
+    )
+    for attempt in story["attempts"]:
+        reason = attempt["decline_code"] or attempt["failure_code"] or "—"
+        st.markdown(
+            f"attempt {attempt['attempt_number']} · `{attempt['created_at']}` · "
+            f"**{attempt['status']}** · {attempt['card_brand']} ••{attempt['card_last4']} · "
+            f"reason `{reason}` · charge `{attempt['id']}`"
+        )
+    for refund in story["refunds"]:
+        st.markdown(
+            f"refund `{refund['id']}` · {history.usd(refund['amount_cents'])} · "
+            f"reason `{refund['reason']}` · `{refund['created_at']}`"
+        )
+    for dispute in story["disputes"]:
+        st.markdown(
+            f"dispute `{dispute['id']}` · {history.usd(dispute['amount_cents'])} · "
+            f"reason `{dispute['reason']}` · status `{dispute['status']}` · "
+            f"opened `{dispute['created_at']}` · closed `{dispute['closed_at'] or 'open'}`"
+        )
+    st.markdown("**Webhook timeline**")
+    for event in story["events"]:
+        with st.expander(f"{event['created_at']} · {event['type']}"):
+            st.json(event["payload"], expanded=False)
+
+
+def render_dashboard() -> None:
+    """Gross / refunds / disputes / net and charts, computed from the dataset."""
+    ds = _history()
+    manifest = ds.manifest
+    st.subheader("Dashboard — last 90 days")
+    st.caption(
+        f"{HISTORY_NOTE} Window {manifest['window_start'][:10]} → "
+        f"{manifest['anchor'][:10]} · seed {manifest['seed']}."
+    )
+    m = history.summary_metrics(ds)
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Gross volume", history.usd(m["gross_cents"]))
+    c2.metric("Refunds", history.usd(m["refunded_cents"]))
+    c3.metric("Disputes", history.usd(m["disputed_cents"]))
+    c4.metric("Net volume", history.usd(m["net_cents"]))
+    c5, c6, c7, c8 = st.columns(4)
+    c5.metric("Orders", m["orders"])
+    c6.metric("Payment attempts", m["payment_attempts"])
+    c7.metric("Success rate", f"{m['success_rate']:.1%}")
+    c8.metric("Webhook events", m["webhook_events"])
+    st.caption(
+        f"{m['refunds']} refunded orders · {m['disputes']} disputes "
+        f"({history.usd(m['dispute_withdrawn_cents'])} still withdrawn). "
+        "Net = gross − refunds − disputed funds still withdrawn (lost or open); "
+        "won disputes are reinstated."
+    )
+
+    import pandas as pd  # streamlit dependency; only needed for charts
+
+    daily = pd.DataFrame(history.daily_series(ds)).set_index("date")
+    st.markdown("#### Daily gross volume (USD)")
+    st.bar_chart((daily["gross_cents"] / 100).rename("gross USD"))
+    st.markdown("#### Payment attempts per day")
+    st.bar_chart(daily[["succeeded", "failed"]])
+    st.markdown("#### Orders by weekday")
+    st.bar_chart(pd.DataFrame(history.weekday_profile(ds)).set_index("weekday"))
+
+    left, right = st.columns(2)
+    with left:
+        st.markdown("#### Products (paid orders)")
+        for row in history.product_revenue(ds):
+            st.markdown(
+                f"**{row['name']}** · {row['units']} units · "
+                f"{history.usd(row['gross_cents'])}"
+            )
+    with right:
+        st.markdown("#### Decline reasons")
+        for reason, count in history.failure_breakdown(ds):
+            st.markdown(f"`{reason}` · {count} attempts")
+
+
+def render_order_history() -> None:
+    """Searchable, paginated synthetic order history with drill-down."""
+    ds = _history()
+    st.subheader("Order history — last 90 days (synthetic)")
+    st.caption(HISTORY_NOTE)
+    statuses = sorted({o["status"] for o in ds.orders})
+    picked = st.multiselect("Status", statuses, default=[], key="hist_order_status")
+    query = st.text_input("Search order / customer / email", key="hist_order_q")
+    rows = history.filter_orders(ds, statuses=picked or None, query=query)
+    page = _page_controls(len(rows), "hist_order_page")
+    customers = ds.customers_by_id
+    for order in history.paginate(rows, page, PAGE_SIZE):
+        customer = customers[order["customer_id"]]
+        flags = []
+        if order["refund_id"]:
+            flags.append("refunded")
+        if order["dispute_id"]:
+            flags.append("disputed")
+        st.markdown(
+            f"**{order['id']}** · `{order['created_at']}` · status `{order['status']}` · "
+            f"{history.usd(order['total_cents'])} · {customer['name']}"
+            + (f" · {', '.join(flags)}" if flags else "")
+        )
+    if rows:
+        order_id = st.selectbox(
+            "Open order", [o["id"] for o in rows], key="hist_order_pick"
+        )
+        render_order_story(ds, order_id)
+    else:
+        st.info("No orders match.")
+
+
+def render_event_history() -> None:
+    """Filter / search the generated webhook events (read-only history)."""
+    ds = _history()
+    st.markdown("#### Event history — last 90 days (synthetic)")
+    st.caption(
+        "Read-only history generated by data/generate_data.py. The live "
+        "console above only acts on orders created in this session."
+    )
+    types = st.multiselect(
+        "Event types", list(history.EVENT_TYPES), default=[], key="hist_evt_types"
+    )
+    query = st.text_input(
+        "Search event id / order / payment_intent / charge / customer / email",
+        key="hist_evt_q",
+    )
+    rows = history.filter_events(ds, types=types or None, query=query)
+    page = _page_controls(len(rows), "hist_evt_page")
+    customers = ds.customers_by_id
+    for event in history.paginate(rows, page, PAGE_SIZE):
+        st.markdown(_event_row(event, customers))
+        with st.expander("payload"):
+            st.json(event["payload"], expanded=False)
+    if not rows:
+        st.info("No events match.")
+
+
 def main() -> None:
     """Streamlit page composition."""
     st.set_page_config(
@@ -277,8 +456,8 @@ def main() -> None:
         st.session_state.pop("last_webhook_msg", None)
         st.rerun()
 
-    tab_store, tab_pay, tab_hook, tab_orders = st.tabs(
-        ["Storefront", "Checkout", "Webhook console", "Orders"]
+    tab_store, tab_pay, tab_hook, tab_orders, tab_dash = st.tabs(
+        ["Storefront", "Checkout", "Webhook console", "Orders", "Dashboard (90 days)"]
     )
     with tab_store:
         render_storefront(store)
@@ -286,8 +465,14 @@ def main() -> None:
         render_checkout(store)
     with tab_hook:
         render_webhook_console(store)
+        st.divider()
+        render_event_history()
     with tab_orders:
         render_orders(store)
+        st.divider()
+        render_order_history()
+    with tab_dash:
+        render_dashboard()
 
     st.caption(
         "© 2026 SASK LLC — SW Services · Portfolio demonstration · "

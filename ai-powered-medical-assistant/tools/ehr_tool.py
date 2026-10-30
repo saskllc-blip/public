@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 from utils.logger import log_tool_call
+from tools.visit_history_tool import _load as _load_visit_history, format_visit_timeline
 
 
 def _load():
@@ -72,9 +73,15 @@ def get_medical_history(patient_id: str) -> Dict[str, Any]:
                      f"  Treatment: {entry['treatment']}\n"
                      f"  Notes: {entry['notes']}\n")
 
+        visits = [v for v in _load_visit_history()["visits"] if v["patient_id"] == patient_id]
+        if visits:
+            text += (f"\nVisit Timeline ({len(visits)} past visits, most recent first):\n"
+                     + format_visit_timeline(visits) + "\n")
+
         result = {"success": True, "patient_id": patient_id,
                   "patient_name": p["name"], "history_text": text,
                   "history_entries": len(history),
+                  "visit_count": len(visits),
                   "medications_count": len(p.get("current_medications",[]))}
         log_tool_call("get_medical_history", patient_id, "retrieved", True,
                       duration_ms=(time.time()-start)*1000, patient_id=patient_id)

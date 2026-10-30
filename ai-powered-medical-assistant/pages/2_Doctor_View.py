@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 from tools.appointment_tool import get_appointments_by_doctor
 from tools.ehr_tool import get_medical_history, get_all_patients
+from tools.visit_history_tool import get_doctor_visits
 
 st.set_page_config(page_title="Doctor View", page_icon="🩺", layout="wide")
 st.title("🩺 Doctor View")
@@ -51,6 +52,22 @@ with tab1:
         c3.metric("Cancelled", sum(1 for a in appts if a["status"]=="Cancelled"))
     else:
         st.info("No appointments scheduled.")
+
+    st.divider()
+    st.subheader("Visit History")
+    vr = get_doctor_visits(did)
+    if vr.get("success") and vr.get("visits"):
+        c1,c2,c3 = st.columns(3)
+        c1.metric("Past Visits",        len(vr["visits"]))
+        c2.metric("Patients Seen",      vr["unique_patients"])
+        c3.metric("Referrals Received", vr["referrals_received"])
+        st.dataframe(pd.DataFrame([{
+            "Date": v["date"], "Patient": v["patient_name"], "Type": v["visit_type"],
+            "Diagnosis": v["diagnosis"], "Status": v["control_status"],
+            "Complaint": v["chief_complaint"],
+        } for v in vr["visits"]]), use_container_width=True, hide_index=True)
+    else:
+        st.info("No past visits recorded.")
 
 with tab2:
     st.subheader("Quick Patient Lookup")
