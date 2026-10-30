@@ -36,6 +36,21 @@ from that repository, branch `main`, with main file path
 
 ![Architecture](docs/images/architecture.png)
 
+- **Entry:** `app.py` on Streamlit Cloud, sidebar radio over five pages
+  (Dashboard, Properties, Tenants & Leases, Payments, Mortgages), plus Country / City /
+  Search filters and **Reset to demo data**.
+- **Service:** one `DemoPortfolio` per session (`st.session_state.portfolio`) for KPIs,
+  country summary, occupancy history, filtered views, mortgage roll-up, add property, and
+  mark collected.
+- **Data / state:** six in-memory lists of frozen records: properties, tenants, leases,
+  payments, expenses, and mortgages.
+- **Seed data path:** `data/generate_data.py` (offline, seed `20261025`) writes the committed
+  `data/rentals.json`. At startup, `seed.build_seed(today)` loads it, shifts every date by
+  `today − as_of`, and builds the `models.py` dataclasses: `Property`, `Tenant`, `Lease`,
+  `Payment`, `Expense`, `Mortgage`.
+- **External:** Streamlit and the Python standard library only. There is no database, API,
+  auth, or secrets, and every record is fictional.
+
 See [docs/architecture.md](docs/architecture.md).
 
 ---
