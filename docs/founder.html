@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Founder — SASK Software Services</title>
+<meta name="description" content="Kiran Keshava, Founder &amp; CTO of SASK LLC — senior-engineer hands on every project.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230e1b2c'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23c9a227' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="index.html" aria-label="SASK Software Services — home">
+      <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#0e1b2c"/><text x="32" y="45" font-family="Georgia, serif" font-size="38" fill="#c9a227" text-anchor="middle">S</text></svg>
+      <span class="brand-text"><strong>SASK</strong><small>SW SERVICES</small></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <nav class="site-nav" id="siteNav">
+      <a href="index.html">Home</a>
+      <details class="nav-drop">
+        <summary>Products</summary>
+        <div class="drop-panel">
+          <a href="products/keepers.html">Keepers</a>
+        </div>
+      </details>
+      <a href="services.html">Services</a>
+      <a href="how-we-work.html">How We Work</a>
+      <a href="demos.html">Demos</a>
+      <a href="open-source.html">Open Source</a>
+      <a href="founder.html">Founder</a>
+      <a class="btn btn-gold btn-sm" href="services.html#contact">Work with us</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section id="founder" class="section">
+    <div class="wrap">
+      <p class="eyebrow">The founder</p>
+      <h2>Senior-engineer hands on every project.</h2>
+      <div class="founder-card card">
+        <div class="founder-id">
+          <div class="monogram" aria-hidden="true">KK</div>
+          <h3>Kiran Keshava</h3>
+          <p class="founder-role">Founder &amp; CTO, SASK LLC</p>
+          <p class="founder-loc">Saratoga, California</p>
+          <a class="btn btn-dark btn-sm" href="https://www.linkedin.com/in/kiran-kumar-keshava/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        </div>
+        <div class="founder-bio">
+          <p>Kiran brings <strong>20+ years of engineering and quality leadership</strong> to a two-person-scale studio on purpose: the person who scopes your project is the person who builds it. He currently serves as <strong>Director of Engineering, Quality &amp; Automation at Bio-Rad Laboratories</strong>, leading software quality for FDA-regulated diagnostic systems &mdash; work where &ldquo;mostly works&rdquo; is not an option, and the same standard runs SASK&rsquo;s client work.</p>
+          <p>Before Bio-Rad he led engineering and quality organizations at <strong>Amazon Lab126</strong> (connectivity &amp; software for Echo and Fire TV, ~100 engineers), <strong>Apple</strong> (Core OS system test), <strong>Qualcomm / Atheros</strong> (director, WLAN/Bluetooth, 13 years), <strong>Dexcom</strong>, and <strong>Latch</strong> (VP, Quality Engineering) &mdash; shipping consumer devices, medical software, and carrier infrastructure at scales from startup to millions of units. He is also co-founder of <em>WheresTheParty</em>, an AI-driven event-discovery app.</p>
+          <h4>Education</h4>
+          <ul class="ticks">
+            <li>M.S., Computer Science &mdash; Old Dominion University</li>
+            <li>B.E., Mechanical Engineering &mdash; Bangalore University; Research Fellow, Indian Institute of Science (IISc)</li>
+          </ul>
+          <h4>Certifications &amp; credentials</h4>
+          <p class="chips">
+            <span class="chip">Google Generative AI Leader (2025)</span>
+            <span class="chip">Advanced Generative AI Specialization (2026)</span>
+            <span class="chip">Applied Generative AI Specialization &mdash; capstone author</span>
+            <span class="chip">Six Sigma Green Belt (UCSD)</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-in">
+    <p><strong>SASK LLC</strong> &middot; Software Services &middot; Saratoga, California &middot; Operating since 2020</p>
+    <p class="footer-note">We build products and provide software services. This site&rsquo;s source lives in the <a href="https://github.com/saskllc-blip/public/tree/main/docs" target="_blank" rel="noopener">public repo</a>. &copy; <span id="year">2026</span> SASK LLC. <a href="keepers-privacy.html">Keepers privacy</a></p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  var toggle = document.getElementById('navToggle'), nav = document.getElementById('siteNav');
+  toggle.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') nav.classList.remove('open'); });
+</script>
+
+</body>
+</html>
