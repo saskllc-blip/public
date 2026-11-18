@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keepers — SASK Software Services</title>
+<meta name="description" content="Keepers by SASK: on-device local photo cleanup and organization. Photos never leave your devices. Coming soon.">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230e1b2c'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23c9a227' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="../index.html" aria-label="SASK Software Services — home">
+      <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#0e1b2c"/><text x="32" y="45" font-family="Georgia, serif" font-size="38" fill="#c9a227" text-anchor="middle">S</text></svg>
+      <span class="brand-text"><strong>SASK</strong><small>SW SERVICES</small></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <nav class="site-nav" id="siteNav">
+      <a href="../index.html">Home</a>
+      <details class="nav-drop">
+        <summary>Products</summary>
+        <div class="drop-panel">
+          <a href="../products/keepers.html">Keepers</a>
+        </div>
+      </details>
+      <a href="../services.html">Services</a>
+      <a href="../how-we-work.html">How We Work</a>
+      <a href="../demos.html">Demos</a>
+      <a href="../open-source.html">Open Source</a>
+      <a href="../founder.html">Founder</a>
+      <a class="btn btn-gold btn-sm" href="../services.html#contact">Work with us</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="keepers-hero" aria-label="Keepers splash artwork">
+    <img class="keepers-hero-art" src="../assets/keepers-splash-landscape.jpg" width="1400" height="600" alt="Keepers splash: photo chaos resolving into ordered drives and the Keepers mark">
+  </section>
+
+  <section class="section keepers-body">
+    <div class="wrap keepers-grid">
+      <div>
+        <p class="eyebrow">Product</p>
+        <h1>Keepers</h1>
+        <p class="section-lede">On-device local LLM photo cleanup and organization. Your photos never leave the house &mdash; they are never uploaded to us. Keep the memories; skip the cloud photo subscription bill.</p>
+        <p>Keepers indexes your library where it already lives. It does not copy your photos into a cloud account. Analysis runs on your device with local models: organization, face and person grouping, and cleanup decisions you control.</p>
+        <ul class="feature-list">
+          <li>
+            <strong>Index, don&rsquo;t copy</strong>
+            <span>Library organization that points at your files &mdash; your originals stay put.</span>
+          </li>
+          <li>
+            <strong>Photos stay local</strong>
+            <span>Nothing left the house. By default, no account and no upload of your library.</span>
+          </li>
+          <li>
+            <strong>Face &amp; person grouping</strong>
+            <span>On-device face detection and clustering so people are grouped where your media lives.</span>
+          </li>
+          <li>
+            <strong>Staged trash with restore</strong>
+            <span>Nothing deletes silently. Review and restore before permanent removal.</span>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <img class="keepers-phone" src="../assets/keepers-app-phone.jpg" width="390" height="844" alt="Keepers app on a phone" loading="lazy">
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="coming-soon">
+        <h2>Coming soon</h2>
+        <p>Keepers is not in the store yet. Check back here for availability &mdash; no download or purchase links until it ships.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-in">
+    <p><strong>SASK LLC</strong> &middot; Software Services &middot; Saratoga, California &middot; Operating since 2020</p>
+    <p class="footer-note">We build products and provide software services. This site&rsquo;s source lives in the <a href="https://github.com/saskllc-blip/public/tree/main/docs" target="_blank" rel="noopener">public repo</a>. &copy; <span id="year">2026</span> SASK LLC. <a href="../keepers-privacy.html">Keepers privacy</a></p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  var toggle = document.getElementById('navToggle'), nav = document.getElementById('siteNav');
+  toggle.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') nav.classList.remove('open'); });
+</script>
+
+</body>
+</html>

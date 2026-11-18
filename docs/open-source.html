@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open Source — SASK Software Services</title>
+<meta name="description" content="Browse SASK Software Services public repositories — demos, tests, and documentation.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230e1b2c'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23c9a227' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-in">
+    <a class="brand" href="index.html" aria-label="SASK Software Services — home">
+      <svg class="emblem" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#0e1b2c"/><text x="32" y="45" font-family="Georgia, serif" font-size="38" fill="#c9a227" text-anchor="middle">S</text></svg>
+      <span class="brand-text"><strong>SASK</strong><small>SW SERVICES</small></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <nav class="site-nav" id="siteNav">
+      <a href="index.html">Home</a>
+      <details class="nav-drop">
+        <summary>Products</summary>
+        <div class="drop-panel">
+          <a href="products/keepers.html">Keepers</a>
+        </div>
+      </details>
+      <a href="services.html">Services</a>
+      <a href="how-we-work.html">How We Work</a>
+      <a href="demos.html">Demos</a>
+      <a href="open-source.html">Open Source</a>
+      <a href="founder.html">Founder</a>
+      <a class="btn btn-gold btn-sm" href="services.html#contact">Work with us</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section id="opensource" class="section">
+    <div class="wrap oss-in">
+      <div>
+        <p class="eyebrow">Open source</p>
+        <h2>Our showroom is a public repo.</h2>
+        <p class="section-lede">All of the demos on this page &mdash; source, tests, and documentation &mdash; live in one public repository. Browse it before you hire us; it&rsquo;s the most honest portfolio we can offer.</p>
+        <div class="hero-cta">
+          <a class="btn btn-gold" href="https://github.com/saskllc-blip/public" target="_blank" rel="noopener">github.com/saskllc-blip/public</a>
+          <a class="btn btn-ghost" href="https://github.com/saskllc-blip" target="_blank" rel="noopener">All repositories &rarr;</a>
+        </div>
+      </div>
+      <ul class="repo-list">
+        <li><code>sask-stripe-demo/</code><span>Payments, webhooks, idempotency</span></li>
+        <li><code>ai-powered-medical-assistant/</code><span>Agentic AI + evaluation harness</span></li>
+        <li><code>sask-rentals-demo/</code><span>Portfolio dashboard</span></li>
+        <li><code>sask-linkedin-demo/</code><span>Engagement workspace</span></li>
+        <li><code>docs/</code><span>This website</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-in">
+    <p><strong>SASK LLC</strong> &middot; Software Services &middot; Saratoga, California &middot; Operating since 2020</p>
+    <p class="footer-note">We build products and provide software services. This site&rsquo;s source lives in the <a href="https://github.com/saskllc-blip/public/tree/main/docs" target="_blank" rel="noopener">public repo</a>. &copy; <span id="year">2026</span> SASK LLC. <a href="keepers-privacy.html">Keepers privacy</a></p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  var toggle = document.getElementById('navToggle'), nav = document.getElementById('siteNav');
+  toggle.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') nav.classList.remove('open'); });
+</script>
+
+</body>
+</html>
